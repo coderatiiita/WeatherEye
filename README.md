@@ -34,6 +34,8 @@ export WEATHER_API_KEY=your_api_key
 export WEATHER_API_URL=https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline
 export REDIS_HOST=localhost
 export REDIS_PORT=6379
+export WEATHER_CACHE_TTL_SECONDS=43200 # optional cache TTL
+export SERVER_PORT=8080
 ```
 
 Run the application using Maven:
@@ -43,4 +45,6 @@ cd backend
 mvn spring-boot:run
 ```
 
-Then open `http://localhost:8080` in your browser to access the simple UI.
+The UI is served from the same server port (default `8080`) so you can open
+`http://localhost:$SERVER_PORT` in your browser (substitute your configured
+`SERVER_PORT` value if different).

@@ -19,6 +19,9 @@ public class WeatherService {
     @Value("${weather.api.key}")
     private String apiKey;
 
+    @Value("${weather.cache.ttl}")
+    private long cacheTtlSeconds;
+
     public WeatherService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
@@ -37,7 +40,7 @@ public class WeatherService {
                 .toUriString();
         String response = restTemplate.getForObject(uri, String.class);
         if (response != null) {
-            redisTemplate.opsForValue().set(key, response, Duration.ofHours(12));
+            redisTemplate.opsForValue().set(key, response, Duration.ofSeconds(cacheTtlSeconds));
         }
         return response;
     }
