@@ -7,8 +7,11 @@ In this project, instead of relying on our own weather data, we will build a wea
 Weather API
 
 As for the actual weather API to use, you can use your favorite one, as a suggestion, here is a link to Visual Crossing’s API, it’s completely FREE and easy to use.
+https://www.visualcrossing.com/weather-api/
 
 Regarding the in-memory cache, a pretty common recommendation is to use Redis, you can read more about it here, and as a recommendation, you could use the city code entered by the user as the key, and save there the result from calling the API.
+![image](https://github.com/user-attachments/assets/fcef24c0-a7ea-4f4e-b879-03e7d0dd938a)
+
 
 At the same time, when you “set” the value in the cache, you can also give it an expiration time in seconds (using the EX flag on the SET command). That way the cache (the keys) will automatically clean itself when the data is old enough (for example, giving it a 12-hours expiration time).
 
