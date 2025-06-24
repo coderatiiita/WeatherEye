@@ -1,0 +1,16 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+}
+.container {
+    width: 400px;
+    margin: 50px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+pre {
+    background: #eee;
+    padding: 10px;
+}

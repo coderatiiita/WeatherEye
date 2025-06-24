@@ -24,3 +24,23 @@ Make sure to handle errors properly. If the 3rd party API is down, or if the cit
 Use some package or module to make HTTP requests e.g. if you are using Node.js, you can use the axios package, if you are using Python, you can use the requests module.
 Implement rate limiting to prevent abuse of your API. You can use a package like express-rate-limit if you are using Node.js or flask-limiter if you are using Python.
 This project will help you understand how to work with 3rd party APIs, caching, and environment variables. It will also help you understand how to structure your API and how to handle requests.
+
+## Running the Application
+
+The backend is a Spring Boot application located in the `backend` directory. It depends on Redis and a weather API key. Provide these values using environment variables:
+
+```
+export WEATHER_API_KEY=your_api_key
+export WEATHER_API_URL=https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline
+export REDIS_HOST=localhost
+export REDIS_PORT=6379
+```
+
+Run the application using Maven:
+
+```
+cd backend
+mvn spring-boot:run
+```
+
+Then open `http://localhost:8080` in your browser to access the simple UI.
