@@ -37,10 +37,16 @@ export REDIS_PORT=6379
 export WEATHER_CACHE_TTL_SECONDS=43200 # optional cache TTL
 export SERVER_PORT=8080
 export WEATHER_ALLOW_INSECURE_SSL=false # set to true if your environment lacks trusted certificates
+export WEATHER_RATE_LIMIT_FOR_PERIOD=5   # optional allowed requests per period
+export WEATHER_RATE_LIMIT_REFRESH_PERIOD=1s # optional rate limit refresh period
+export WEATHER_RATE_LIMIT_TIMEOUT=0s    # optional wait timeout when rate limited
 ```
 
 If Redis cannot be reached at runtime, the application logs a warning and still
 serves data directly from the weather service without caching.
+
+The `/api/weather` endpoint is rate limited using Resilience4j. Adjust the
+`WEATHER_RATE_LIMIT_*` environment variables to tune the limit values.
 
 Run the application using Maven:
 
