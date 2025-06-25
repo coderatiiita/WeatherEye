@@ -2,16 +2,20 @@ package com.weathereye.backend;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import jakarta.annotation.PostConstruct;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 import java.time.Duration;
+import java.io.IOException;
 
 @Service
 public class WeatherService {
-    private final RestTemplate restTemplate = new RestTemplate();
     private final StringRedisTemplate redisTemplate;
+    private WeatherApi weatherApi;
 
     @Value("${weather.api.url}")
     private String apiUrl;
@@ -26,6 +30,15 @@ public class WeatherService {
         this.redisTemplate = redisTemplate;
     }
 
+    @PostConstruct
+    void init() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(apiUrl.endsWith("/") ? apiUrl : apiUrl + "/")
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+        weatherApi = retrofit.create(WeatherApi.class);
+    }
+
     public String getWeather(String city) {
         String key = "weather:" + city.toLowerCase();
         String cached = redisTemplate.opsForValue().get(key);
@@ -33,15 +46,19 @@ public class WeatherService {
             return cached;
         }
 
-        String uri = UriComponentsBuilder.fromHttpUrl(apiUrl + "/" + city)
-                .queryParam("unitGroup", "metric")
-                .queryParam("key", apiKey)
-                .queryParam("contentType", "json")
-                .toUriString();
-        String response = restTemplate.getForObject(uri, String.class);
-        if (response != null) {
-            redisTemplate.opsForValue().set(key, response, Duration.ofSeconds(cacheTtlSeconds));
+        Call<String> call = weatherApi.getWeather(city, "metric", apiKey, "json");
+        try {
+            Response<String> response = call.execute();
+            if (response.isSuccessful()) {
+                String body = response.body();
+                if (body != null) {
+                    redisTemplate.opsForValue().set(key, body, Duration.ofSeconds(cacheTtlSeconds));
+                }
+                return body;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return response;
+        return null;
     }
 }
