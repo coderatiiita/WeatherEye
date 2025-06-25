@@ -2,6 +2,9 @@ package com.weathereye.backend;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import jakarta.annotation.PostConstruct;
 import retrofit2.Call;
@@ -14,6 +17,7 @@ import java.io.IOException;
 
 @Service
 public class WeatherService {
+    private static final Logger logger = LoggerFactory.getLogger(WeatherService.class);
     private final StringRedisTemplate redisTemplate;
     private WeatherApi weatherApi;
 
@@ -41,7 +45,12 @@ public class WeatherService {
 
     public String getWeather(String city) {
         String key = "weather:" + city.toLowerCase();
-        String cached = redisTemplate.opsForValue().get(key);
+        String cached = null;
+        try {
+            cached = redisTemplate.opsForValue().get(key);
+        } catch (RedisConnectionFailureException e) {
+            logger.warn("Redis unavailable, continuing without cache", e);
+        }
         if (cached != null) {
             return cached;
         }
@@ -52,7 +61,11 @@ public class WeatherService {
             if (response.isSuccessful()) {
                 String body = response.body();
                 if (body != null) {
-                    redisTemplate.opsForValue().set(key, body, Duration.ofSeconds(cacheTtlSeconds));
+                    try {
+                        redisTemplate.opsForValue().set(key, body, Duration.ofSeconds(cacheTtlSeconds));
+                    } catch (RedisConnectionFailureException e) {
+                        logger.warn("Failed to cache weather data", e);
+                    }
                 }
                 return body;
             }

@@ -38,6 +38,9 @@ export WEATHER_CACHE_TTL_SECONDS=43200 # optional cache TTL
 export SERVER_PORT=8080
 ```
 
+If Redis cannot be reached at runtime, the application logs a warning and still
+serves data directly from the weather service without caching.
+
 Run the application using Maven:
 
 ```
