@@ -3,15 +3,44 @@ body {
     background: #f0f0f0;
 }
 .container {
-    width: 400px;
-    margin: 50px auto;
-    background: white;
+    max-width: 500px;
+    margin: 40px auto;
+    background: #ffffff;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-pre {
-    background: #eee;
-    padding: 10px;
+
+.search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search button {
+    padding: 8px 12px;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search button:hover {
+    background: #0056b3;
+}
+
+.weather {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 4px;
+    line-height: 1.5;
 }
 
