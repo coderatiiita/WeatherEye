@@ -11,7 +11,7 @@ RUN mvn -ntp dependency:go-offline
 
 # Copy source and build the runnable spring‑boot JAR
 COPY src ./src
-RUN mvn -ntp -DskipTests spring-boot:repackage
+RUN mvn -ntp clean package -DskipTests
 
 # ----------------------------------------------------------
 # ---- 2. Runtime stage – slim JRE image -------------------
