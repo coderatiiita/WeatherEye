@@ -11,6 +11,15 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import okhttp3.OkHttpClient;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 
 import java.time.Duration;
 import java.io.IOException;
@@ -30,13 +39,41 @@ public class WeatherService {
     @Value("${weather.cache.ttl}")
     private long cacheTtlSeconds;
 
+    @Value("${weather.api.allowInsecureSsl:false}")
+    private boolean allowInsecureSsl;
+
     public WeatherService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
     @PostConstruct
     void init() {
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+
+        if (allowInsecureSsl) {
+            try {
+                TrustManager[] trustAllCerts = new TrustManager[]{
+                        new X509TrustManager() {
+                            public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+                            public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+                            public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+                        }
+                };
+                SSLContext sslContext = SSLContext.getInstance("SSL");
+                sslContext.init(null, trustAllCerts, new SecureRandom());
+                SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+                clientBuilder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+                HostnameVerifier allHostsValid = (hostname, session) -> true;
+                clientBuilder.hostnameVerifier(allHostsValid);
+            } catch (Exception e) {
+                logger.error("Failed to configure insecure SSL", e);
+            }
+        }
+
+        OkHttpClient client = clientBuilder.build();
+
         Retrofit retrofit = new Retrofit.Builder()
+                .client(client)
                 .baseUrl(apiUrl.endsWith("/") ? apiUrl : apiUrl + "/")
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();

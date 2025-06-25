@@ -36,6 +36,7 @@ export REDIS_HOST=localhost
 export REDIS_PORT=6379
 export WEATHER_CACHE_TTL_SECONDS=43200 # optional cache TTL
 export SERVER_PORT=8080
+export WEATHER_ALLOW_INSECURE_SSL=false # set to true if your environment lacks trusted certificates
 ```
 
 If Redis cannot be reached at runtime, the application logs a warning and still
