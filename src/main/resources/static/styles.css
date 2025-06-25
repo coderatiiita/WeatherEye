@@ -1,6 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     background: #f0f0f0;
+    transition: background 0.5s ease, color 0.5s ease;
 }
 .container {
     max-width: 500px;
@@ -42,5 +43,34 @@ body {
     padding: 15px;
     border-radius: 4px;
     line-height: 1.5;
+}
+
+.icon-wrapper {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.weather-icon {
+    width: 100px;
+    display: none;
+}
+
+body.weather-clear-day {
+    background: linear-gradient(to bottom, #87CEEB, #FFE57F);
+}
+
+body.weather-rain {
+    background: linear-gradient(to bottom, #a9c9ff, #9e9e9e);
+    color: #fff;
+}
+
+body.weather-snow {
+    background: linear-gradient(to bottom, #e6e9f0, #eef1f5);
+}
+
+body.weather-cloudy,
+body.weather-partly-cloudy-day,
+body.weather-partly-cloudy-night {
+    background: linear-gradient(to bottom, #d3d3d3, #f0f0f0);
 }
 
