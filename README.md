@@ -58,3 +58,8 @@ mvn spring-boot:run
 The UI is served from the same server port (default `8080`) so you can open
 `http://localhost:$SERVER_PORT` in your browser (substitute your configured
 `SERVER_PORT` value if different).
+
+Screenshot
+
+<img width="1439" alt="Screenshot 2025-06-25 at 9 04 41 AM" src="https://github.com/user-attachments/assets/6c8de001-4d81-481a-b051-1ad4a6f55337" />
+
