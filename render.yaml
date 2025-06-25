@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: weathereye
+    plan: free
+    runtime: docker
+    dockerfilePath: ./Dockerfile   # optional; Render can build Maven projects natively
+    envVars:
+      - key: WEATHER_API_KEY                   # set in dashboard or Render Secrets
+        sync: false
+      - key: WEATHER_API_URL
+        value: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline
+      - key: WEATHER_CACHE_TTL_SECONDS
+        value: "43200"
+databases:
+  - name: redis
+    plan: free
